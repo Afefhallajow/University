@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
+
 import java.util.List;
 import java.util.Set;
 
@@ -28,7 +31,7 @@ public class Course extends BaseEntity {
     private List<String> tags;
 
     @Column(columnDefinition = "jsonb")
-    @Type(name = "jsonb", typeClass = JsonBinaryType.class)
+    @JdbcTypeCode(SqlTypes.JSON)
     private String metadata;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)

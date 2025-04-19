@@ -1,0 +1,50 @@
+type Enrollment {
+    id: ID!
+    mark: Int
+    student: Student!
+    offering: CourseOffering!
+}
+
+type Student {
+    id: ID!
+    name: String!
+    email: String!
+    enrollments: [Enrollment!]!
+}
+
+type CourseOffering {
+    id: ID!
+    semester: SemesterEnum!
+    year: Int!
+    course: Course!
+    teacher: Teacher
+    enrollments: [Enrollment!]!
+}
+
+type Course {
+    id: ID!
+    code: String!
+    title: String!
+}
+
+type Teacher {
+    id: ID!
+    name: String!
+    email: String!
+}
+
+enum SemesterEnum {
+    SPRING
+    FALL
+}
+
+type Mutation {
+    enrollStudent(studentId: ID!, offeringId: ID!): Enrollment
+    setMark(enrollmentId: ID!, mark: Int!): Enrollment
+}
+
+type Query {
+    allEnrollments: [Enrollment!]!
+    studentReport(studentId: ID!): Student
+    coursesByTeacher(teacherId: ID!, year: Int, semester: SemesterEnum): [CourseOffering!]!
+}
