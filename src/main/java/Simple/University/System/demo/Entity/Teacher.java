@@ -2,14 +2,12 @@ package Simple.University.System.demo.Entity;
 
 
 import Simple.University.System.demo.Entity.Core.BaseEntity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
-import org.hibernate.type.SqlTypes;
 
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
@@ -27,7 +25,7 @@ public class Teacher extends BaseEntity {
     private String email;
 
     @Column(columnDefinition = "jsonb")
-    @JdbcTypeCode(SqlTypes.JSON)
+    @Type(type = "jsonb")
     private String extra;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)

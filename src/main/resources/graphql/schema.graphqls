@@ -1,0 +1,101 @@
+type Enrollment {
+    id: ID!
+    mark: Int
+    student: Student!
+    offering: CourseOffering!
+}
+
+type Student {
+    id: ID!
+    name: String!
+    email: String!
+    enrollments: [Enrollment!]!
+}
+
+type CourseOffering {
+    id: ID!
+    semester: SemesterEnum!
+    year: Int!
+    course: Course!
+    teacher: Teacher
+    enrollments: [Enrollment!]!
+}
+
+type Course {
+    id: ID!
+    code: String!
+    title: String!
+}
+
+type Teacher {
+    id: ID!
+    name: String!
+    email: String!
+}
+
+enum SemesterEnum {
+    SPRING
+    FALL
+}
+input CourseOfferInput {
+    courseId: ID!
+    teacherId: ID!
+    semester: SemesterEnum
+    year: Int
+}
+type CourseOfferingResponseDTO{
+    offeringId: ID!
+    courseCode: String!
+    teacherName: String!
+    semester: SemesterEnum!
+    year: Int!
+}
+
+type Mutation {
+    enrollStudent(studentId: ID!, offeringId: ID!): Enrollment
+    setMark(enrollmentId: ID!, mark: Int!): Enrollment
+
+    # Student
+    addStudent(name: String!, email: String!): Student
+    updateStudent(id: ID!, name: String, email: String): Student
+    deleteStudent(id: ID!): Boolean
+    getReport(id: ID!): StudentResponse
+
+    # Teacher
+    addTeacher(name: String!, email: String!): Teacher
+    updateTeacher(id: ID!, name: String, email: String): Teacher
+    deleteTeacher(id: ID!): Boolean
+
+    # Course
+    addCourse(code: String!, title: String!): Course
+    updateCourse(id: ID!, code: String, title: String): Course
+    deleteCourse(id: ID!): Boolean
+
+    #Course Offer
+    addOffer(input:CourseOfferInput): CourseOfferingResponseDTO
+}
+
+type StudentResponse {
+    id: ID!
+    name: String!
+    gpa: Float!
+}
+
+type Query {
+    allEnrollments: [Enrollment!]!
+    studentReport(studentId: ID!): Student
+
+    allStudents: [Student!]!
+    allTeachers: [Teacher!]!
+    allCourses: [Course!]!
+
+    getCoursesByTeacher(
+        teacherId: ID!
+        year: Int
+        semester:  SemesterEnum): [Course!]!
+
+    studentsByCourse(
+        courseId: ID!
+        semester: SemesterEnum
+    ): [Student!]!
+}

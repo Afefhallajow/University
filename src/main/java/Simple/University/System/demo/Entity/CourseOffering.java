@@ -2,9 +2,9 @@ package Simple.University.System.demo.Entity;
 
 import Simple.University.System.demo.Entity.Core.BaseEntity;
 import Simple.University.System.demo.Extra.SemesterEnum;
-import jakarta.persistence.*;
 import lombok.*;
 
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity

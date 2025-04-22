@@ -9,14 +9,14 @@ import Simple.University.System.demo.Repository.EnrollmentRepository;
 import Simple.University.System.demo.Repository.StudentRepository;
 import Simple.University.System.demo.Repository.TeacherRepository;
 import Simple.University.System.demo.Service.EnrollmentService;
-import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Service
 @Transactional
-@NoArgsConstructor(force = true) @AllArgsConstructor
+@RequiredArgsConstructor
 class EnrollmentServiceImpl implements EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;

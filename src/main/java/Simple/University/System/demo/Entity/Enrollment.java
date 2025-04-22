@@ -1,10 +1,11 @@
 package Simple.University.System.demo.Entity;
 
 import Simple.University.System.demo.Entity.Core.BaseEntity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.*;
+
+import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 @Entity
 @Table(name = "enrollments",

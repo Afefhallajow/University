@@ -1,14 +1,11 @@
 package Simple.University.System.demo.Entity;
 
 import Simple.University.System.demo.Entity.Core.BaseEntity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
-import org.hibernate.type.SqlTypes;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +28,7 @@ public class Course extends BaseEntity {
     private List<String> tags;
 
     @Column(columnDefinition = "jsonb")
-    @JdbcTypeCode(SqlTypes.JSON)
+    @Type(type = "jsonb")
     private String metadata;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
