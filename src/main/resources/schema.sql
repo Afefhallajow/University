@@ -4,7 +4,7 @@
 CREATE TYPE semester_enum AS ENUM ('SPRING', 'FALL');
 
 -- 2. Table for Teachers
-CREATE TABLE teacher (
+CREATE TABLE teachers (
                          id SERIAL PRIMARY KEY,
                          name TEXT NOT NULL,
                          email TEXT NOT NULL UNIQUE,
@@ -12,7 +12,7 @@ CREATE TABLE teacher (
 );
 
 -- 3. Table for Students
-CREATE TABLE student (
+CREATE TABLE students (
                          id SERIAL PRIMARY KEY,
                          name TEXT NOT NULL,
                          email TEXT NOT NULL UNIQUE,
@@ -20,7 +20,7 @@ CREATE TABLE student (
 );
 
 -- 4. Table for Courses
-CREATE TABLE course (
+CREATE TABLE courses (
                         id SERIAL PRIMARY KEY,
                         code TEXT NOT NULL UNIQUE,
                         title TEXT NOT NULL,
@@ -29,20 +29,20 @@ CREATE TABLE course (
 );
 
 -- 5. Table for Course Offerings
-CREATE TABLE course_offering (
+CREATE TABLE course_offerings (
                                  id SERIAL PRIMARY KEY,
-                                 course_id INT NOT NULL REFERENCES course(id) ON DELETE CASCADE,
-                                 teacher_id INT NOT NULL REFERENCES teacher(id) ON DELETE SET NULL,
+                                 course_id INT NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+                                 teacher_id INT NOT NULL REFERENCES teachers(id) ON DELETE SET NULL,
                                  semester semester_enum NOT NULL,
                                  year INT NOT NULL,
                                  UNIQUE (course_id, semester, year)        -- One offering per course per semester/year
 );
 
 -- 6. Table for Enrollments
-CREATE TABLE enrollment (
+CREATE TABLE enrollments (
                             id SERIAL PRIMARY KEY,
-                            offering_id INT NOT NULL REFERENCES course_offering(id) ON DELETE CASCADE,
-                            student_id INT NOT NULL REFERENCES student(id) ON DELETE CASCADE,
+                            offering_id INT NOT NULL REFERENCES course_offerings(id) ON DELETE CASCADE,
+                            student_id INT NOT NULL REFERENCES students(id) ON DELETE CASCADE,
                             mark INT CHECK (mark BETWEEN 0 AND 100),  -- Exam mark between 0 and 100
                             UNIQUE (offering_id, student_id)          -- Avoid duplicate enrollment
 );
