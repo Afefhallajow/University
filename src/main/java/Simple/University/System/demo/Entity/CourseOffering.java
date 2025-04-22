@@ -1,8 +1,11 @@
 package Simple.University.System.demo.Entity;
 
+import Simple.University.System.demo.Config.PostgreSQLEnumType;
 import Simple.University.System.demo.Entity.Core.BaseEntity;
 import Simple.University.System.demo.Extra.SemesterEnum;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -10,6 +13,10 @@ import java.util.Set;
 @Entity
 @Table(name = "course_offerings",
         uniqueConstraints = @UniqueConstraint(columnNames = {"course_id", "semester", "year"}))
+@TypeDef(
+        name = "pgsql_enum",
+        typeClass = PostgreSQLEnumType.class
+)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class CourseOffering extends BaseEntity {
 
@@ -22,7 +29,11 @@ public class CourseOffering extends BaseEntity {
     private Teacher teacher;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Type(type = "pgsql_enum")
+    @Column(
+            name = "semester",
+            columnDefinition = "semester_enum",
+            nullable = false)
     private SemesterEnum semester;
 
     @Column(nullable = false)

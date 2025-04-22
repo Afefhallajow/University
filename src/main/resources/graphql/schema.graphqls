@@ -1,3 +1,4 @@
+scalar JSON
 type Enrollment {
     id: ID!
     mark: Int
@@ -9,6 +10,7 @@ type Student {
     id: ID!
     name: String!
     email: String!
+    extra: JSON
     enrollments: [Enrollment!]!
 }
 
@@ -25,12 +27,15 @@ type Course {
     id: ID!
     code: String!
     title: String!
+    tags: [String]
+    metadata: JSON
 }
 
 type Teacher {
     id: ID!
     name: String!
     email: String!
+    extra: JSON
 }
 
 enum SemesterEnum {
@@ -50,44 +55,55 @@ type CourseOfferingResponseDTO{
     semester: SemesterEnum!
     year: Int!
 }
-
-type Mutation {
-    enrollStudent(studentId: ID!, offeringId: ID!): Enrollment
-    setMark(enrollmentId: ID!, mark: Int!): Enrollment
-
-    # Student
-    addStudent(name: String!, email: String!): Student
-    updateStudent(id: ID!, name: String, email: String): Student
-    deleteStudent(id: ID!): Boolean
-    getReport(id: ID!): StudentResponse
-
-    # Teacher
-    addTeacher(name: String!, email: String!): Teacher
-    updateTeacher(id: ID!, name: String, email: String): Teacher
-    deleteTeacher(id: ID!): Boolean
-
-    # Course
-    addCourse(code: String!, title: String!): Course
-    updateCourse(id: ID!, code: String, title: String): Course
-    deleteCourse(id: ID!): Boolean
-
-    #Course Offer
-    addOffer(input:CourseOfferInput): CourseOfferingResponseDTO
+type CourseMarkDTo {
+    id: ID!
+    title: String!
+    code: String!
+    semester: SemesterEnum!
+    mark: Int
 }
-
-type StudentResponse {
+type StudentReportResponse {
     id: ID!
     name: String!
-    gpa: Float!
+    gpa: Float,
+    remainCourses: [CourseMarkDTo]
+    marks:[CourseMarkDTo]
+}
+type StudentPageResponse {
+    totalPages: Int!
+    totalElements: Int!
+    number: Int!
+    data: [Student!]!
 }
 
+type TeacherPageResponse {
+    totalPages: Int!
+    totalElements: Int!
+    number: Int!
+    data: [Teacher!]!
+}
+
+type CoursePageResponse {
+    totalPages: Int!
+    totalElements: Int!
+    number: Int!
+    data: [Course!]!
+}
 type Query {
     allEnrollments: [Enrollment!]!
-    studentReport(studentId: ID!): Student
+    allCourseOfferings(year: Int, semester: SemesterEnum): [CourseOfferingResponseDTO!]!
+    getReport(studentId: ID!): StudentReportResponse
 
-    allStudents: [Student!]!
-    allTeachers: [Teacher!]!
-    allCourses: [Course!]!
+
+    allStudents(page: Int!, size: Int!): StudentPageResponse!
+    allTeachers(page: Int!, size: Int!): TeacherPageResponse!
+    allCourses(page: Int!, size: Int!): CoursePageResponse!
+
+    getCourseById(id: ID!): Course!
+    getTeacherById(id: ID!): Teacher!
+    getStudentById(id: ID!): Student!
+    getOfferById(id: ID!): CourseOfferingResponseDTO!
+
 
     getCoursesByTeacher(
         teacherId: ID!
@@ -96,6 +112,31 @@ type Query {
 
     studentsByCourse(
         courseId: ID!
-        semester: SemesterEnum
-    ): [Student!]!
+        semester: SemesterEnum): [Student!]!
+}
+
+type Mutation {
+    enrollStudent(studentId: ID!, offeringId: ID!): Enrollment
+    setMark(enrollmentId: ID!, mark: Int!): Enrollment
+
+    # Student
+    addStudent(name: String!, email: String!, extra: JSON): Student
+    updateStudent(id: ID!, name: String, email: String, extra: JSON): Student
+    deleteStudent(id: ID!): Boolean
+
+    # Teacher
+    addTeacher(name: String!, email: String!, extra: JSON): Teacher
+    updateTeacher(id: ID!, name: String, email: String, extra: JSON): Teacher
+    deleteTeacher(id: ID!): Boolean
+
+    # Course
+    addCourse(code: String!, title: String!, tags: [String], metaData: JSON!): Course
+    updateCourse(id: ID!, code: String, title: String, tags: [String], metaData: JSON): Course
+    deleteCourse(id: ID!): Boolean
+
+    #Course Offer
+    addOffer(input: CourseOfferInput!): CourseOfferingResponseDTO!
+    updateOffer(id: ID!, input: CourseOfferInput!): CourseOfferingResponseDTO!
+    deleteOffer(id: ID!): Boolean
+
 }

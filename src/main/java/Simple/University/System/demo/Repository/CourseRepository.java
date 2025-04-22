@@ -14,4 +14,6 @@ public interface CourseRepository extends BaseRepository<Course> {
     List<Course> findDistinctByOfferings_Teacher_IdAndOfferings_Year(Long teacherId, Integer year);
 
     List<Course> findDistinctByOfferings_Teacher_Id(Long teacherId);
+
+    List<Course> findDistinctByOfferings_Teacher_IdAndOfferings_Semester(Long teacherId, SemesterEnum semester);
 }

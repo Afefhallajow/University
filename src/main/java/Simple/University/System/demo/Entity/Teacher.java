@@ -2,15 +2,22 @@ package Simple.University.System.demo.Entity;
 
 
 import Simple.University.System.demo.Entity.Core.BaseEntity;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
+@TypeDefs({
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 @Table(name = "teachers")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Teacher extends BaseEntity {
@@ -26,7 +33,7 @@ public class Teacher extends BaseEntity {
 
     @Column(columnDefinition = "jsonb")
     @Type(type = "jsonb")
-    private String extra;
+    private Map<String, Object> extra;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CourseOffering> offerings;

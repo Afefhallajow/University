@@ -3,16 +3,17 @@ package Simple.University.System.demo.ServiceImpl;
 import Simple.University.System.demo.Entity.CourseOffering;
 import Simple.University.System.demo.Entity.Enrollment;
 import Simple.University.System.demo.Entity.Student;
-import Simple.University.System.demo.Entity.Teacher;
+import Simple.University.System.demo.Exception.BusinessException;
+import Simple.University.System.demo.Extra.SemesterEnum;
 import Simple.University.System.demo.Repository.CourseOfferingRepository;
 import Simple.University.System.demo.Repository.EnrollmentRepository;
 import Simple.University.System.demo.Repository.StudentRepository;
-import Simple.University.System.demo.Repository.TeacherRepository;
 import Simple.University.System.demo.Service.EnrollmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -22,7 +23,6 @@ class EnrollmentServiceImpl implements EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final StudentRepository studentRepository;
     private final CourseOfferingRepository offeringRepository;
-    private final TeacherRepository teacherRepository;
 
 
     @Override
@@ -32,29 +32,15 @@ class EnrollmentServiceImpl implements EnrollmentService {
         CourseOffering offering = offeringRepository.findById(offeringId)
                 .orElseThrow(() -> new IllegalArgumentException("Course offering not found"));
 
-        if (enrollmentRepository.existsByStudentAndOffering(student, offering)) {
-            throw new IllegalStateException("Student already enrolled in this offering");
+
+        if (enrollmentRepository.existsByStudentAndOfferingAndMarkIsNullOrMarkIsGreaterThanEqual(student, offering, 60)) {
+            throw new BusinessException("Student already enrolled in this offering");
         }
 
         long currentEnrollments = enrollmentRepository.countByStudentAndOffering_SemesterAndOffering_Year(
                 student, offering.getSemester(), offering.getYear());
         if (currentEnrollments >= 6) {
-            throw new IllegalStateException("Student cannot enroll in more than 6 courses per semester");
-        }
-
-        Teacher teacher = offering.getTeacher();
-        if (teacher != null) {
-            long teacherLoad = offeringRepository.countByTeacherAndSemesterAndYear(
-                    teacher, offering.getSemester(), offering.getYear());
-            if (teacherLoad >= 4) {
-                throw new IllegalStateException("Teacher cannot teach more than 4 courses per semester");
-            }
-        }
-
-        boolean alreadyPassed = enrollmentRepository.existsByStudentAndOffering_CourseAndMarkGreaterThanEqual(
-                student, offering.getCourse(), 60);
-        if (alreadyPassed) {
-            throw new IllegalStateException("Student has already passed this course");
+            throw new BusinessException("Student cannot enroll in more than 6 courses per semester");
         }
 
         Enrollment enrollment = Enrollment.builder()
@@ -74,5 +60,19 @@ class EnrollmentServiceImpl implements EnrollmentService {
         }
         enrollment.setMark(mark);
         return enrollmentRepository.save(enrollment);
+    }
+
+        @Override
+        public List<Enrollment> getEnrollmentsByStudentAndSemesterAndYear(Long studentId, SemesterEnum semester, int year) {
+            Student student = studentRepository.findById(studentId)
+                    .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+
+            return enrollmentRepository.findByStudentAndOffering_SemesterAndOffering_Year(
+                    student, semester, year);
+        }
+
+    @Override
+    public List<Enrollment> findAll() {
+        return enrollmentRepository.findAll();
     }
 }
