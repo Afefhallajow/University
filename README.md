@@ -186,6 +186,14 @@ scalar JSON
 | Cannot re-enroll passed course (>=60) | Checked in `EnrollmentService` before allowing new enrollment. |
 | Mark must be between 0 and 100 | Validated in `setMark` mutation logic, with passing threshold of 60. |
 
+##Postman Collection
+
+To facilitate API testing and exploration, a ready-to-use Postman collection is provided:
+
+File: University GraphQL API.postman_collection.json
+
+This collection includes all key queries and mutations, preconfigured with example inputs and ready for testing against your local server.
+
 ### Database Constraint Details
 
 - **SemesterEnum (SPRING, FALL)**: Defined as a PostgreSQL `ENUM` via Hibernate’s `@Enumerated(EnumType.STRING)` on `CourseOffering.semester`.
@@ -194,4 +202,3 @@ scalar JSON
 - **Max 6 courses per student per semester**: Enforced in `EnrollmentService`.
 - **Pass mark check (≥60)**: Enforced in `EnrollmentService` and via GraphQL input validation in `setMark()` resolver.
 - **Cannot re-enroll in passed courses**: Checked in `enrollStudent()` before creating a new `Enrollment`.
-
