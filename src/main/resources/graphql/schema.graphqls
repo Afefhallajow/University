@@ -130,13 +130,12 @@ type Mutation {
     deleteTeacher(id: ID!): Boolean
 
     # Course
-    addCourse(code: String!, title: String!, tags: [String], metaData: JSON!): Course
-    updateCourse(id: ID!, code: String, title: String, tags: [String], metaData: JSON): Course
+    addCourse(code: String!, title: String!, tags: [String], metadata: JSON): Course
+    updateCourse(id: ID!, code: String, title: String, tags: [String], metadata: JSON): Course
     deleteCourse(id: ID!): Boolean
 
     #Course Offer
     addOffer(input: CourseOfferInput!): CourseOfferingResponseDTO!
     updateOffer(id: ID!, input: CourseOfferInput!): CourseOfferingResponseDTO!
     deleteOffer(id: ID!): Boolean
-
 }
